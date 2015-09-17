@@ -1,0 +1,27 @@
+{
+  "name": "node-stressful-journey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "bunyan": "^1.5.1",
+    "concat-stream": "^1.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisprice/node-stressful-journey.git"
+  },
+  "author": "Chris Price",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrisprice/node-stressful-journey/issues"
+  },
+  "homepage": "https://github.com/chrisprice/node-stressful-journey#readme"
+}

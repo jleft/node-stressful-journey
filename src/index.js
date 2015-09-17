@@ -1,10 +1,13 @@
-var run = require('./run'),
-  log = require('./log');
+var log = require('./log'),
+  path = require('path'),
+  run = require('./run');
 
-var steps = require(process.argv[2]),
+var stepsPath = path.relative(__dirname, path.resolve(process.argv[2])),
   count = process.argv[3] || 1,
   delay = process.argv[4] || 0,
   randomisation = process.argv[5] || 0;
+
+var steps = require(stepsPath);
 
 var completedCount = 0,
   errorCount = 0;

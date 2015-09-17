@@ -1,22 +1,4 @@
-var url = require('url'),
-  value = require('./value');
-
-function template(_url) {
-  return function(ctx) {
-    var url = value(_url, ctx);
-    return url.replace(/\$\{([^}]+)\}/g, function(_, token) {
-      return ctx[token];
-    });
-  }
-}
-
-function addAuthToken(_url) {
-  return function(ctx) {
-    var options = url.parse(value(_url, ctx));
-    options.headers.token = ctx.token;
-    return options;
-  }
-}
+var url = require('url');
 
 var prefix = 'http://localhost';
 
@@ -49,11 +31,11 @@ module.exports = [
       return prefix + '/hello';
     },
     request: function(ctx, req) {
-      ctx.bob = 'bob';
+      ctx.bar = 'foo';
       req.end();
     },
     response: function(ctx, res) {
-      if (ctx.foo !== 'bar' || ctx.bob !== 'bob') {
+      if (ctx.foo !== 'bar' || ctx.bar !== 'foo') {
         throw new Error('Failed to propagate context');
       }
     }

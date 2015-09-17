@@ -1,7 +1,7 @@
 var concat = require('concat-stream')
   http = require('http'),
   url = require('url'),
-  value = require('./value');
+  value = require('../value');
 
 
 module.exports = function(config, ctx, done) {

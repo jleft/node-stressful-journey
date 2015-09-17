@@ -2,8 +2,9 @@ var value = require('./value'),
   log = require('./log');
 
 var stepHandlers = {
-  'request': require('./request'),
-  'wait': require('./wait')
+  'custom': require('./handlers/custom'),
+  'request': require('./handlers/request'),
+  'wait': require('./handlers/wait')
 };
 
 module.exports = function(steps, index, done) {
@@ -42,7 +43,7 @@ module.exports = function(steps, index, done) {
       var delta = process.hrtime(start);
       ctx.deltas.push(delta);
 
-      runLog.info({step: stepIndex, delta: delta[1]}, "Finished step");
+      runLog.info({step: stepIndex, delta: delta[1] / 1000000}, "Finished step");
 
       next(error);
     });

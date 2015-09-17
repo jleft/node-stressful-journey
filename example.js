@@ -78,5 +78,22 @@ module.exports = [
         throw new Error('Failed to validate response');
       }
     }
+  },
+  {
+    type: 'request',
+    options: function(ctx) {
+      var options = url.parse('http://localhost/echo');
+      options.method = 'POST';
+      return options;
+    },
+    request: function(ctx, req) {
+      req.setHeader('Content-Type', 'application/json');
+      req.end(JSON.stringify({hello:'world'}));
+    },
+    response: function(ctx, res) {
+      if (res.hello !== 'world') {
+        throw new Error('Failed to validate response');
+      }
+    }
   }
 ];

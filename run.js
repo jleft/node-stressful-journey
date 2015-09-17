@@ -1,31 +1,31 @@
 var value = require('./value'),
-  bunyan = require('bunyan');
+  log = require('./log');
 
 var stepHandlers = {
   'request': require('./request'),
   'wait': require('./wait')
 };
 
-var rootLog = bunyan.createLogger({name: 'run'});
-
 module.exports = function(steps, index, done) {
 
   var ctx = {
-      index: index
+      steps: steps,
+      index: index,
+      deltas: []
     },
     stepIndex = -1;
 
-  var log = rootLog.child({index: index});
+  var runLog = log.child({index: index});
 
   function next(error) {
     if (error) {
-      log.info(error, "Error during run");
-      return done(new Error('Error in step ' + stepIndex + ':' + error));
+      runLog.info(error, "Error during run");
+      return done(new Error('Error in step ' + stepIndex + ':' + error), ctx);
     }
 
     if (++stepIndex >= steps.length) {
-      log.info("Finished run");
-      return done();
+      runLog.info("Finished run");
+      return done(null, ctx);
     }
 
     var step = steps[stepIndex],
@@ -34,19 +34,21 @@ module.exports = function(steps, index, done) {
     ctx.step = step;
     ctx.stepIndex = stepIndex;
 
-    log.info({step: stepIndex}, "Starting step");
+    runLog.info({step: stepIndex}, "Starting step");
     var start = process.hrtime();
 
     handler(step, ctx, function(error) {
 
       var delta = process.hrtime(start);
-      log.info({step: stepIndex, delta: delta[1]}, "Finished step");
+      ctx.deltas.push(delta);
+
+      runLog.info({step: stepIndex, delta: delta[1]}, "Finished step");
 
       next(error);
     });
   }
 
-  log.info("Starting run");
+  runLog.info("Starting run");
   next();
 };
 

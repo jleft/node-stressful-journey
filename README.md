@@ -47,4 +47,4 @@ stressful-journey journey.js [count=1] [delay=0] [randomisation=0]
 ```
 
 * `count` - the number of users to simulate
-* `delay`/`ransomisation` - allows control of ramp-up (`(1 - Math.random() * randomisation) * delay`)
+* `delay`/`ransomisation` - allows control of ramp-up `(1 - Math.random() * randomisation) * delay`

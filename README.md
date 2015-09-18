@@ -1,5 +1,5 @@
 # node-stressful-journey
-A tool for stess testing user journeys through APIs
+A tool for stress testing user journeys through APIs
 
 ## Installation
 

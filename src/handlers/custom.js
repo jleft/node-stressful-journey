@@ -1,13 +1,14 @@
 module.exports = function(config, ctx, done) {
-  if (config.length <= 1) {
+  var handler = config.handler;
+  if (handler.length <= 1) {
     try {
-      config(ctx);
+      handler(ctx);
       done();
     }
     catch(e) {
       done(e);
     }
   } else {
-    config(ctx, done);
+    handler(ctx, done);
   }
 };

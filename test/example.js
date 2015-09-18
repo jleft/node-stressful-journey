@@ -77,5 +77,22 @@ module.exports = [
         throw new Error('Failed to validate response');
       }
     }
+  },
+  {
+    type: 'custom',
+    handler: function(ctx) {
+      var runCount = module.exports.runCount || 0;
+      module.exports.runCount = runCount + 1;
+    }
+  },
+  {
+    type: 'custom',
+    handler: function(ctx, done) {
+      setTimeout(function() {
+        var asyncRunCount = module.exports.asyncRunCount || 0;
+        module.exports.asyncRunCount = asyncRunCount + 1;
+        done();
+      }, 10);
+    }
   }
 ];

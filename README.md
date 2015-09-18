@@ -105,7 +105,9 @@ A `custom` step simply calls the configured handler -
   }
 ```
 
-Also supports async operation if a second argument is specified by the handler.
+Any errors thrown here will be recorded and cause the step to fail.
+
+Also supports async operation if a second argument is specified by the handler. In this case errors should be specified as the argument to the callback.
 
 ###ctx
 

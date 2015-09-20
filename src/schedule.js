@@ -1,4 +1,5 @@
-var run = require('./run');
+var times = require('async').times,
+  run = require('./run');
 
 module.exports = function(options, done) {
 
@@ -7,28 +8,20 @@ module.exports = function(options, done) {
     delay = options.delay || 0,
     randomisation = options.randomisation || 0;
 
-  var completedCount = 0,
-    errorCount = 0;
-
-  function runComplete(error, ctx) {
+  function next(error, results) {
     if (error) {
-      errorCount++;
+      throw new Error('Should not be possible.');
     }
-    if (++completedCount < count) {
-      return;
-    }
-    done(null, errorCount);
+    var errors = results.filter(function(r) { return r.error; });
+    done(null, errors.length);
   }
 
-  function scheduleRun(index) {
+  function scheduleRun(index, next) {
     var duration = (1 - Math.random() * randomisation) * delay;
     setTimeout(function() {
-      run(steps, i, runComplete);
+      run(steps, index, next);
     }, duration);
   }
 
-  for (var i = 0; i < count; i++) {
-    scheduleRun(i);
-  }
-
+  times(count, scheduleRun, next);
 };

@@ -21,12 +21,17 @@ module.exports = function(steps, index, done) {
   function next(error) {
     if (error) {
       runLog.info(error, "Error during run");
-      return done(new Error('Error in step ' + stepIndex + ':' + error), ctx);
+      return done(null, {
+        error: new Error('Error in step ' + stepIndex + ':' + error),
+        context: ctx
+      });
     }
 
     if (++stepIndex >= steps.length) {
       runLog.info("Finished run");
-      return done(null, ctx);
+      return done(null, {
+        context: ctx
+      });
     }
 
     var step = steps[stepIndex],
@@ -52,5 +57,3 @@ module.exports = function(steps, index, done) {
   runLog.info("Starting run");
   next();
 };
-
-

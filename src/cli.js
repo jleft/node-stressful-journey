@@ -16,4 +16,9 @@ function done(error, errorCount) {
   }
 }
 
-schedule(steps, count, delay, randomisation, done);
+schedule({
+  steps: steps,
+  count: count,
+  delay: delay,
+  randomisation: randomisation,
+}, done);

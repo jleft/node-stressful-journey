@@ -1,6 +1,11 @@
 var run = require('./run');
 
-module.exports = function(steps, count, delay, randomisation, done) {
+module.exports = function(options, done) {
+
+  var steps = options.steps || [],
+    count = options.count || 1,
+    delay = options.delay || 0,
+    randomisation = options.randomisation || 0;
 
   var completedCount = 0,
     errorCount = 0;

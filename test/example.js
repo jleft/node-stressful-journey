@@ -1,6 +1,6 @@
 var url = require('url');
 
-var prefix = 'http://localhost';
+var prefix = 'http://localhost:1234';
 
 module.exports = [
   {
@@ -48,6 +48,7 @@ module.exports = [
     type: 'request',
     options: {
       hostname: 'localhost',
+      port: 1234,
       path: '/echo',
       method: 'POST'
     },
@@ -64,7 +65,7 @@ module.exports = [
   {
     type: 'request',
     options: function(ctx) {
-      var options = url.parse('http://localhost/echo');
+      var options = url.parse(prefix + '/echo');
       options.method = 'POST';
       return options;
     },

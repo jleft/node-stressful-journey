@@ -5,7 +5,11 @@ var http = require('http'),
 var delay = process.argv[2] || 0,
   randomisation = process.argv[3] || 0;
 
-module.exports = function(delay, randomisation) {
+module.exports = function(options) {
+
+  var delay = options.delay || 0,
+    randomisation = options.randomisation || 0,
+    port = options.port || 80;
 
   function request(request, response) {
     var path = url.parse(request.url).path || '',
@@ -34,5 +38,5 @@ module.exports = function(delay, randomisation) {
 
   return http.createServer()
     .on('request', request)
-    .listen(80);
+    .listen(port);
 };

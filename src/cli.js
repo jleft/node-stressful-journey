@@ -1,6 +1,11 @@
 var schedule = require('./schedule'),
   path = require('path');
 
+if (process.argv.length < 3) {
+  console.log('Usage: stressful-journey <steps> [count=1] [delay=0] [randomisation=0]');
+  process.exit(1);
+}
+
 var stepsPath = path.relative(__dirname, path.resolve(process.argv[2])),
   steps = require(stepsPath),
   count = process.argv[3] || 1,

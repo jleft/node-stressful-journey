@@ -1,6 +1,6 @@
 {
   "name": "stressful-journey",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A tool for stess testing user journeys through APIs",
   "main": "src/schedule.js",
   "bin": "src/cli.js",

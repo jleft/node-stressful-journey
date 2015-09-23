@@ -18,7 +18,7 @@ function done(error, errorCount) {
     console.error(error);
     process.exit(1);
   } else {
-    console.info('Completed (%d) errors)', errorCount);
+    console.info('Completed (%d errors)', errorCount);
   }
 }
 

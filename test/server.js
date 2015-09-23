@@ -11,7 +11,7 @@ module.exports = function(options) {
     randomisation = options.randomisation || 0,
     port = options.port || 80;
 
-  function request(request, response) {
+  function requestHandler(request, response) {
     var path = url.parse(request.url).path || '',
         matches;
       setTimeout(function() {
@@ -37,6 +37,6 @@ module.exports = function(options) {
   }
 
   return http.createServer()
-    .on('request', request)
+    .on('request', requestHandler)
     .listen(port);
 };

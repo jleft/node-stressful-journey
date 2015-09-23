@@ -6,7 +6,18 @@ var concat = require('concat-stream'),
 
 module.exports = function(config, ctx, done) {
 
-  function json(json) {
+  var error = null;
+
+  function abort(e) {
+    request.abort();
+    done(e);
+  }
+
+  function errorHandler(e) {
+    done(new Error('Connection error:' + e));
+  }
+
+  function jsonHandler(json) {
     var response;
     try {
       response = JSON.parse(json);
@@ -19,26 +30,22 @@ module.exports = function(config, ctx, done) {
         config.response(ctx, response);
       }
       catch (e) {
-        return done(new Error('Error in response:' + e));
+        return done(e);
       }
     }
     done();
   }
 
-  function response(response) {
+  function responseHandler(response) {
     var statusCode = response.statusCode;
     if (statusCode !== 200) {
-      return done(new Error('Non-200 response:' + statusCode));
+      return abort(new Error('Non-200 response:' + statusCode));
     }
     var contentType = response.headers['content-type'];
     if (contentType.indexOf('application/json') !== 0) {
-      return done(new Error('Non-JSON content-type:' + contentType));
+      return abort(new Error('Non-JSON content-type:' + contentType));
     }
-    response.pipe(concat(json));
-  }
-
-  function error(error) {
-    done(new Error('Connection error:' + error));
+    response.pipe(concat(jsonHandler));
   }
 
   var options = value(config.options, ctx);
@@ -51,15 +58,15 @@ module.exports = function(config, ctx, done) {
   options.agent = false;
 
   var request = http.request(options)
-    .on('response', response)
-    .on('error', error);
+    .on('response', responseHandler)
+    .on('error', errorHandler);
 
   if (config.request) {
       try {
         config.request(ctx, request);
       }
       catch (e) {
-        return done(new Error('Error in request:' + e));
+        abort(e);
       }
   } else {
     request.end();

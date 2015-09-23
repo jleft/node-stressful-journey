@@ -1,4 +1,5 @@
 # node-stressful-journey
+
 A tool for stress testing user journeys through APIs
 
 ## Installation
@@ -9,9 +10,9 @@ npm install -g stressful-journey
 
 ## Configuration
 
-To execute a stress test, you need to provide the journey to test. This is specified as a JS module which exports an array of steps.
+To execute a stress test, you need to provide the journey to test. This is specified as a JS module which exports an array of steps (see [`test/example.js`](https://github.com/chrisprice/node-stressful-journey/blob/master/test/example.js) for an example).
 
-###request
+`type: 'request'`
 
 The most common step is a request. An HTTP request will be issued and the step will only succeed if the status code is `200`, the content-type is `application/json` and the response is valid JSON. A simple example is -
 
@@ -27,7 +28,7 @@ The ```options``` value is passed to [```http.request```](https://nodejs.org/api
 It is also possible to specify a factory method if you want to e.g. template the URL -
 
 ```js
-  var prefifx = ''http://localhost/hello';
+  var prefix = 'http://localhost/hello';
   // ...
   options: function(ctx) {
     return prefix + '/hello';
@@ -70,7 +71,7 @@ Likewise if you want to validate the JSON response you can specify a function as
 
 The `res` argument is an [```http.IncommingMessage```](https://nodejs.org/api/http.html#http_http_incomingmessage). Any errors thrown here will be recorded and cause the step to fail.
 
-###wait
+`type: 'wait'`
 
 A `wait` step causes the journey to pause for the specified `duration` of milliseconds -
 
@@ -92,7 +93,7 @@ A `wait` step causes the journey to pause for the specified `duration` of millis
   }
 ```
 
-###custom
+`type: 'custom'`
 
 A `custom` step simply calls the configured handler -
 
@@ -109,7 +110,7 @@ Any errors thrown here will be recorded and cause the step to fail.
 
 Also supports async operation if a second argument is specified by the handler. In this case errors should be specified as the argument to the callback.
 
-###ctx
+`ctx`
 
 `ctx` is an object unique to each simulated user which can be used to store values between steps or functions within a step. The following properties are automatically added -
 

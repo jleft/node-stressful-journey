@@ -1,5 +1,7 @@
 # node-stressful-journey
 
+[![Build Status](https://travis-ci.org/chrisprice/node-stressful-journey.svg?branch=master)](https://travis-ci.org/chrisprice/node-stressful-journey)
+
 A tool for stress testing user journeys through APIs
 
 ## Installation

@@ -21,8 +21,8 @@
   },
   "scripts": {
     "lint": "jshint src test && mdspell README.md",
-    "test": "tape test/test.js",
-    "ci": "npm run lint"
+    "tape": "tape test/test.js",
+    "test": "npm run lint && npm run tape"
   },
   "repository": {
     "type": "git",

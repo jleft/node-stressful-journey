@@ -1,4 +1,4 @@
-var concat = require('concat-stream')
+var concat = require('concat-stream'),
   http = require('http'),
   url = require('url'),
   value = require('../value');

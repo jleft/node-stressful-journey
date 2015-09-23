@@ -9,9 +9,9 @@ if (process.argv.length < 3) {
 
 var stepsPath = path.relative(__dirname, path.resolve(process.argv[2])),
   steps = require(stepsPath),
-  count = process.argv[3] || 1,
-  delay = process.argv[4] || 0,
-  randomisation = process.argv[5] || 0;
+  count = Number(process.argv[3]) || 1,
+  delay = Number(process.argv[4]) || 0,
+  randomisation = Number(process.argv[5]) || 0;
 
 function done(error, errorCount) {
   if (error) {

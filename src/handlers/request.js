@@ -31,7 +31,7 @@ module.exports = function(config, ctx, done) {
       return done(new Error('Non-200 response:' + statusCode));
     }
     var contentType = response.headers['content-type'];
-    if (contentType !== 'application/json') {
+    if (contentType.indexOf('application/json') !== 0) {
       return done(new Error('Non-JSON content-type:' + contentType));
     }
     response.pipe(concat(json));

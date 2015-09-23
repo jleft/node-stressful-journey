@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var schedule = require('./schedule'),
   path = require('path');
 

@@ -116,10 +116,10 @@ Also supports async operation if a second argument is specified by the handler. 
 
 `ctx` is an object unique to each simulated user which can be used to store values between steps or functions within a step. The following properties are automatically added -
 
+* `uuid` - a RFC4122 v4 UUID
 * `index` - the index of the simulated user
 * `stepIndex` - the index of the currently executing step
 * `step` - the currently executing step (i.e. `ctx.steps[ctx.stepIndex]`)
-* `steps` - the full array of journey steps
 * `deltas` - an array of timing results for the steps completed so far
 
 Other supported types are `wait` and `custom`, see the code (`src/handlers`) for usage.

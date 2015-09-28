@@ -8,3 +8,6 @@ json
 n.b.
 async
 ctx
+RFC4122
+v4
+UUID

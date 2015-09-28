@@ -1,5 +1,6 @@
 var value = require('./value'),
-  log = require('./log');
+  log = require('./log'),
+  uuid = require('node-uuid');
 
 var stepHandlers = {
   'custom': require('./handlers/custom'),
@@ -10,7 +11,7 @@ var stepHandlers = {
 module.exports = function(steps, index, done) {
 
   var ctx = {
-      steps: steps,
+      uuid: uuid.v4(),
       index: index,
       deltas: []
     },

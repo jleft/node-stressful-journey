@@ -3,10 +3,19 @@ var concat = require('concat-stream'),
   url = require('url'),
   value = require('../value');
 
-
 module.exports = function(config, ctx, done) {
 
-  var error = null;
+  var timings = {
+      $last: process.hrtime()
+    },
+    error;
+
+  function mark(label) {
+    var delta = process.hrtime(timings.$last);
+    var deltaMs = (delta[0] * 1e9 + delta[1]) / 1e6;
+    timings[label] = deltaMs;
+    timings.$last = process.hrtime();
+  }
 
   function abort(e) {
     if (error) {
@@ -21,25 +30,31 @@ module.exports = function(config, ctx, done) {
   }
 
   function jsonHandler(json) {
+    mark('receive-end');
     var response;
     try {
+      mark('json-start');
       response = JSON.parse(json);
+      mark('json-end');
     }
     catch (e) {
       return done(new Error('Invalid JSON response:' + e));
     }
     if (config.response) {
       try {
+        mark('response-start');
         config.response(ctx, response);
+        mark('response-end');
       }
       catch (e) {
         return done(e);
       }
     }
-    done();
+    done(null, timings);
   }
 
   function responseHandler(response) {
+    mark('receive-start');
     var statusCode = response.statusCode;
     if (statusCode !== 200) {
       return abort(new Error('Non-200 response:' + statusCode));
@@ -51,7 +66,9 @@ module.exports = function(config, ctx, done) {
     response.pipe(concat(jsonHandler));
   }
 
+  mark('options-start');
   var options = value(config.options, ctx);
+  mark('options-end');
 
   if (typeof(options) === 'string') {
     options = url.parse(options);
@@ -66,7 +83,9 @@ module.exports = function(config, ctx, done) {
 
   if (config.request) {
       try {
+        mark('request-start');
         config.request(ctx, request);
+        mark('request-end');
       }
       catch (e) {
         abort(e);

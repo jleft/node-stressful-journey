@@ -59,12 +59,13 @@ module.exports = function(steps, index, done) {
     runLog.info({step: stepIndex}, "Starting step");
     var start = process.hrtime();
 
-    handler(step, ctx, function(error) {
+    handler(step, ctx, function(error, result) {
 
       var delta = process.hrtime(start);
       ctx.deltas.push(delta);
 
-      runLog.info({step: stepIndex, delta: delta[1] / 1000000}, "Finished step");
+      var deltaMs = (delta[0] * 1e9 + delta[1]) / 1e6;
+      runLog.info({step: stepIndex, delta: deltaMs, result: result}, "Finished step");
 
       next(error);
     });

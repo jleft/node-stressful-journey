@@ -40,6 +40,18 @@ module.exports = function(steps, index, done) {
     ctx.step = step;
     ctx.stepIndex = stepIndex;
 
+    if (step.disabled !== undefined) {
+      try {
+        if (value(step.disabled, ctx)) {
+          runLog.info({step: stepIndex}, "Skipping disabled step");
+          return next();
+        }
+      }
+      catch (e) {
+        return next(e);
+      }
+    }
+
     runLog.info({step: stepIndex}, "Starting step");
     var start = process.hrtime();
 

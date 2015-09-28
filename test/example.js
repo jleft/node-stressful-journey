@@ -95,5 +95,12 @@ module.exports = [
         done();
       }, 10);
     }
+  },
+  {
+    type: 'custom',
+    disabled: true,
+    handler: function(ctx, done) {
+      throw new Error('Should be disabled');
+    }
   }
 ];

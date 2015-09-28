@@ -34,8 +34,7 @@ module.exports = function(steps, index, done) {
       });
     }
 
-    var step = steps[stepIndex],
-      handler = stepHandlers[step.type];
+    var step = steps[stepIndex];
 
     ctx.step = step;
     ctx.stepIndex = stepIndex;
@@ -50,6 +49,11 @@ module.exports = function(steps, index, done) {
       catch (e) {
         return next(e);
       }
+    }
+
+    var handler = stepHandlers[step.type];
+    if (!handler) {
+      return next(new Error('Unknown handler:' + step.type));
     }
 
     runLog.info({step: stepIndex}, "Starting step");

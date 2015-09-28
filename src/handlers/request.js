@@ -9,6 +9,9 @@ module.exports = function(config, ctx, done) {
   var error = null;
 
   function abort(e) {
+    if (error) {
+      return;
+    }
     request.abort();
     done(e);
   }

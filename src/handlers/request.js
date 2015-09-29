@@ -85,16 +85,16 @@ module.exports = function(config, ctx, done) {
   // Disable connection pooling
   options.agent = false;
 
+  var request = http.request(options)
+    .on('response', responseHandler)
+    .on('error', errorHandler)
+    .on('timeout', timeoutHandler);
+
   var timeout = value(config.timeout, ctx);
   if (timeout === undefined) {
     timeout = 60 * 1e3;
   }
-
-  var request = http.request(options)
-    .setTimeout(timeout)
-    .on('response', responseHandler)
-    .on('error', errorHandler)
-    .on('timeout', timeoutHandler);
+  request.setTimeout(timeout);
 
   if (config.request) {
       try {

@@ -1,6 +1,6 @@
 var value = require('./value'),
   log = require('./log'),
-  uuid = require('node-uuid');
+  generateUuid = require('node-uuid').v4;
 
 var stepHandlers = {
   'custom': require('./handlers/custom'),
@@ -10,7 +10,7 @@ var stepHandlers = {
 
 module.exports = function(steps, index, done) {
 
-  var uuid = uuid.v4(),
+  var uuid = generateUuid(),
     ctx = {
       uuid: uuid,
       index: index,

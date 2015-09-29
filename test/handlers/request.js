@@ -14,7 +14,8 @@ test('request - connection error', function(t) {
       var url = 'http://localhost:' + server.address().port;
       var r = request({options: url}, {}, function(e) {
         t.ok(e, 'should return error');
-        t.equals(e.message, 'Connection error: socket hang up');
+        t.ok(e.message.indexOf('Connection error: ') === 0,
+          'Expect an OS specific connection reset message');
         server.close();
       });
     });

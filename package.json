@@ -22,7 +22,7 @@
   },
   "scripts": {
     "lint": "jshint src test && mdspell README.md",
-    "tape": "tape test/test.js",
+    "tape": "tape test/test.js test/handlers/*.js",
     "test": "npm run lint && npm run tape"
   },
   "repository": {

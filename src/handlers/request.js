@@ -18,15 +18,23 @@ module.exports = function(config, ctx, done) {
   }
 
   function abort(e) {
-    if (error) {
-      return;
+    if (!error) {
+      request.abort();
     }
-    request.abort();
-    done(e);
+    errorHandler(e);
   }
 
   function errorHandler(e) {
-    done(new Error('Connection error:' + e));
+    if (error) {
+      // drop subsequent errors
+      return;
+    }
+    error = e;
+    done(new Error('Connection error: ' + e.message));
+  }
+
+  function timeoutHandler() {
+    abort(new Error('Connection timeout'));
   }
 
   function jsonHandler(json) {
@@ -38,7 +46,7 @@ module.exports = function(config, ctx, done) {
       mark('json-end');
     }
     catch (e) {
-      return done(new Error('Invalid JSON response:' + e));
+      return done(new Error('Invalid JSON response: ' + e.message));
     }
     if (config.response) {
       try {
@@ -60,7 +68,7 @@ module.exports = function(config, ctx, done) {
       return abort(new Error('Non-200 response:' + statusCode));
     }
     var contentType = response.headers['content-type'];
-    if (contentType.indexOf('application/json') !== 0) {
+    if (!contentType || contentType.indexOf('application/json') !== 0) {
       return abort(new Error('Non-JSON content-type:' + contentType));
     }
     response.pipe(concat(jsonHandler));
@@ -77,9 +85,16 @@ module.exports = function(config, ctx, done) {
   // Disable connection pooling
   options.agent = false;
 
+  var timeout = value(config.timeout, ctx);
+  if (timeout === undefined) {
+    timeout = 60 * 1e3;
+  }
+
   var request = http.request(options)
+    .setTimeout(timeout)
     .on('response', responseHandler)
-    .on('error', errorHandler);
+    .on('error', errorHandler)
+    .on('timeout', timeoutHandler);
 
   if (config.request) {
       try {
@@ -88,7 +103,7 @@ module.exports = function(config, ctx, done) {
         mark('request-end');
       }
       catch (e) {
-        abort(e);
+        return abort(e);
       }
   } else {
     request.end();

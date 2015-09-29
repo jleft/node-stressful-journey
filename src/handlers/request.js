@@ -5,16 +5,16 @@ var concat = require('concat-stream'),
 
 module.exports = function(config, ctx, done) {
 
-  var timings = {
+  var result = {
       $last: process.hrtime()
     },
     error;
 
   function mark(label) {
-    var delta = process.hrtime(timings.$last);
+    var delta = process.hrtime(result.$last);
     var deltaMs = (delta[0] * 1e9 + delta[1]) / 1e6;
-    timings[label] = deltaMs;
-    timings.$last = process.hrtime();
+    result[label] = deltaMs;
+    result.$last = process.hrtime();
   }
 
   function abort(e) {
@@ -58,7 +58,9 @@ module.exports = function(config, ctx, done) {
         return done(e);
       }
     }
-    done(null, timings);
+    delete result.$last;
+    result.options = options;
+    done(null, result);
   }
 
   function responseHandler(response) {

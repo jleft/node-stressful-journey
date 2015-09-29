@@ -18,13 +18,13 @@ module.exports = function(steps, index, done) {
     },
     stepIndex = -1;
 
-  var runLog = log.child({index: index});
+  var runLog = log.child({uuid: uuid, index: index});
 
   function next(error) {
     if (error) {
-      runLog.info(error, "Error during run");
+      runLog.info(error, "Error in step " + stepIndex);
       return done(null, {
-        error: new Error('Error in step ' + stepIndex + ':' + error),
+        error: new Error("Error in step " + stepIndex + ':' + error),
         context: ctx
       });
     }
@@ -44,7 +44,7 @@ module.exports = function(steps, index, done) {
     if (step.disabled !== undefined) {
       try {
         if (value(step.disabled, ctx)) {
-          runLog.info({uuid: uuid, step: stepIndex}, "Skipping disabled step");
+          runLog.info({step: stepIndex}, "Skipping disabled step");
           return next();
         }
       }
@@ -58,7 +58,7 @@ module.exports = function(steps, index, done) {
       return next(new Error('Unknown handler:' + step.type));
     }
 
-    runLog.info({uuid: uuid, step: stepIndex}, "Starting step");
+    runLog.info({step: stepIndex}, "Starting step");
     var start = process.hrtime();
 
     handler(step, ctx, function(error, result) {
@@ -68,7 +68,7 @@ module.exports = function(steps, index, done) {
 
       ctx.deltas.push(deltaMs);
 
-      runLog.info({uuid: uuid, step: stepIndex, delta: deltaMs, result: result}, "Finished step");
+      runLog.info({step: stepIndex, delta: deltaMs, result: result}, "Finished step");
 
       next(error);
     });

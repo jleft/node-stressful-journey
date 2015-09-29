@@ -73,6 +73,18 @@ Likewise if you want to validate the JSON response you can specify a function as
 
 The `res` argument is an [```http.IncommingMessage```](https://nodejs.org/api/http.html#http_http_incomingmessage). Any errors thrown here will be recorded and cause the step to fail.
 
+It is also possible to specify a custom `timeout` for the request -
+
+```js
+  {
+    type: 'request',
+    timeout: 1000, // ms
+    options: 'http://localhost/hello'
+  }
+```
+
+If not specified a default value of 60 seconds will be used.
+
 `type: 'wait'`
 
 A `wait` step causes the journey to pause for the specified `duration` of milliseconds -

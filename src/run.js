@@ -10,8 +10,9 @@ var stepHandlers = {
 
 module.exports = function(steps, index, done) {
 
-  var ctx = {
-      uuid: uuid.v4(),
+  var uuid = uuid.v4(),
+    ctx = {
+      uuid: uuid,
       index: index,
       deltas: []
     },
@@ -43,7 +44,7 @@ module.exports = function(steps, index, done) {
     if (step.disabled !== undefined) {
       try {
         if (value(step.disabled, ctx)) {
-          runLog.info({step: stepIndex}, "Skipping disabled step");
+          runLog.info({uuid: uuid, step: stepIndex}, "Skipping disabled step");
           return next();
         }
       }
@@ -57,16 +58,17 @@ module.exports = function(steps, index, done) {
       return next(new Error('Unknown handler:' + step.type));
     }
 
-    runLog.info({step: stepIndex}, "Starting step");
+    runLog.info({uuid: uuid, step: stepIndex}, "Starting step");
     var start = process.hrtime();
 
     handler(step, ctx, function(error, result) {
 
-      var delta = process.hrtime(start);
-      ctx.deltas.push(delta);
+      var delta = process.hrtime(start),
+        deltaMs = (delta[0] * 1e9 + delta[1]) / 1e6;
 
-      var deltaMs = (delta[0] * 1e9 + delta[1]) / 1e6;
-      runLog.info({step: stepIndex, delta: deltaMs, result: result}, "Finished step");
+      ctx.deltas.push(deltaMs);
+
+      runLog.info({uuid: uuid, step: stepIndex, delta: deltaMs, result: result}, "Finished step");
 
       next(error);
     });

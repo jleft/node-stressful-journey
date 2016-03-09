@@ -1,5 +1,6 @@
 var value = require('./value'),
   log = require('./log'),
+  extend = require('extend'),
   generateUuid = require('node-uuid').v4;
 
 var stepHandlers = {
@@ -16,13 +17,33 @@ module.exports = function(steps, index, done) {
       index: index,
       deltas: []
     },
-    stepIndex = -1;
+    stepIndex = -1,
+    handler,
+    step;
 
   var runLog = log.child({uuid: uuid, index: index});
 
+  function getStepLogContext() {
+    var logContext = extend(true, {}, ctx);
+    delete logContext.deltas;
+    delete logContext.stepIndex;
+    delete logContext.index;
+    delete logContext.uuid;
+
+    if (handler && handler.logContext && (handler.logContext instanceof Function)) {
+      handler.logContext(step, ctx, logContext);
+    }
+
+    if (step && step.logContext && (step.logContext instanceof Function)) {
+      step.logContext(step, ctx, logContext);
+    }
+
+    return logContext;
+  }
+
   function next(error) {
     if (error) {
-      runLog.info(error, "Error in step " + stepIndex);
+      runLog.info({ err: error, context: getStepLogContext() }, "Error in step " + stepIndex);
       return done(null, {
         error: new Error("Error in step " + stepIndex + ':' + error),
         context: ctx
@@ -36,7 +57,7 @@ module.exports = function(steps, index, done) {
       });
     }
 
-    var step = steps[stepIndex];
+    step = steps[stepIndex];
 
     ctx.step = step;
     ctx.stepIndex = stepIndex;
@@ -44,7 +65,7 @@ module.exports = function(steps, index, done) {
     if (step.disabled !== undefined) {
       try {
         if (value(step.disabled, ctx)) {
-          runLog.info({step: stepIndex}, "Skipping disabled step");
+          runLog.info({step: stepIndex, context: getStepLogContext()}, "Skipping disabled step");
           return next();
         }
       }
@@ -53,12 +74,12 @@ module.exports = function(steps, index, done) {
       }
     }
 
-    var handler = stepHandlers[step.type];
+    handler = stepHandlers[step.type];
     if (!handler) {
       return next(new Error('Unknown handler:' + step.type));
     }
 
-    runLog.info({step: stepIndex}, "Starting step");
+    runLog.info({step: stepIndex, context: getStepLogContext()}, "Starting step");
     var start = process.hrtime();
 
     handler(step, ctx, function(error, result) {
@@ -68,7 +89,7 @@ module.exports = function(steps, index, done) {
 
       ctx.deltas.push(deltaMs);
 
-      runLog.info({step: stepIndex, delta: deltaMs, result: result}, "Finished step");
+      runLog.info({step: stepIndex, context: getStepLogContext(), delta: deltaMs, result: result}, "Finished step");
 
       next(error);
     });

@@ -12,6 +12,8 @@ npm install -g stressful-journey
 
 ## Configuration
 
+### Journey steps
+
 To execute a stress test, you need to provide the journey to test. This is specified as a JS module which exports an array of steps (see [`test/example.js`](https://github.com/chrisprice/node-stressful-journey/blob/master/test/example.js) for an example).
 
 `type: 'request'`
@@ -136,12 +138,18 @@ Also supports async operation if a second argument is specified by the handler. 
 
 Other supported types are `wait` and `custom`, see the code (`src/handlers`) for usage.
 
+### Log serializers
+
+[Bunyan](https://github.com/trentm/node-bunyan) is used for logging. You can add your own [serializers](https://github.com/trentm/node-bunyan#serializers) to modify the log output, this is particularly useful with the `context` field.
+
+The serializers should be specified as a JS module which exports an object of serializers, where the keys are the log record field names and the values are the serializing functions (see [`test/exampleSerializer.js`](https://github.com/chrisprice/node-stressful-journey/blob/master/test/exampleSerializer.js) for an example).
+
 ## Running
 
 Once you have a journey defined, you can run the stress test using -
 
 ```
-stressful-journey journey.js [count=1] [delay=0] [randomisation=0]
+stressful-journey journey.js [log serializer(s)] [count=1] [delay=0] [randomisation=0]
 ```
 
 * `count` - the number of users to simulate

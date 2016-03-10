@@ -1,6 +1,7 @@
 var schedule = require('../src/schedule'),
   server = require('./server'),
   example = require('./example'),
+  exampleSerializer = require('./exampleSerializer'),
   test = require('tape');
 
 test('example journey', function (t) {
@@ -17,6 +18,6 @@ test('example journey', function (t) {
       t.equal(example.asyncRunCount, count, 'should have run the custom async callback count times');
 
       testServer.close();
-    });
+    }, exampleSerializer);
 
 });

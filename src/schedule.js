@@ -1,12 +1,17 @@
 var times = require('async').times,
-  run = require('./run');
+  run = require('./run'),
+  log = require('./log');
 
-module.exports = function(options, done) {
+module.exports = function(options, done, logSerializers) {
 
   var steps = options.steps || [],
     count = options.count || 1,
     delay = options.delay || 0,
     randomisation = options.randomisation || 0;
+
+  if (arguments.length > 2) {
+    log.addSerializers(logSerializers);
+  }
 
   function next(error, results) {
     if (error) {
@@ -19,7 +24,7 @@ module.exports = function(options, done) {
   function scheduleRun(index, next) {
     var duration = (1 - Math.random() * randomisation) * delay;
     setTimeout(function() {
-      run(steps, index, next);
+      run(steps, index, next, log);
     }, duration);
   }
 
